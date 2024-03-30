@@ -6,7 +6,7 @@ import torch.optim as optim
 torch.autograd.set_detect_anomaly(True)
 
 from torch.nn import CrossEntropyLoss
-from dgl.data import CoraGraphDataset
+from dgl.data import CoraGraphDataset,CiteseerGraphDataset,PubmedGraphDataset
 from teacher import GCN, MLP
 from student import StructureStudent, FeatureStudent
 from loss import distillation_loss
@@ -15,7 +15,7 @@ from utils import calculate_accuracy
 
 
 # Load the dataset
-dataset = CoraGraphDataset()
+dataset = CiteseerGraphDataset()
 g = dataset[0]
 
 # Initialize models
@@ -56,21 +56,21 @@ for epoch in range(epochs):
 
     # Backward and optimize for teachers
     structure_teacher_optimizer.zero_grad()
-    structure_teacher_loss.backward(retain_graph=True)
+    structure_teacher_loss.backward()
     structure_teacher_optimizer.step()
 
     feature_teacher_optimizer.zero_grad()
-    feature_teacher_loss.backward(retain_graph=True)
+    feature_teacher_loss.backward()
     feature_teacher_optimizer.step()
 
     # Backward and optimize for students
-    structure_student_optimizer.zero_grad()
-    structure_student_distillation_loss.backward(retain_graph=True)
-    structure_student_optimizer.step()
+    # structure_student_optimizer.zero_grad()
+    # structure_student_distillation_loss.backward()
+    # structure_student_optimizer.step()
 
-    feature_student_optimizer.zero_grad()
-    feature_student_distillation_loss.backward(retain_graph=True)
-    feature_student_optimizer.step()
+    # feature_student_optimizer.zero_grad()
+    # feature_student_distillation_loss.backward()
+    # feature_student_optimizer.step()
 
     # Calculate accuracy (assuming a function calculate_accuracy(logits, labels) is defined)
     structure_teacher_acc = calculate_accuracy(structure_teacher_logits[g.ndata['train_mask']], g.ndata['label'][g.ndata['train_mask']])

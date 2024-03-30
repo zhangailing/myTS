@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import dgl
-from dgl.data import CoraGraphDataset
 from dgl.nn import GraphConv
 
 # 结构教师

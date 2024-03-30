@@ -1,3 +1,5 @@
+import torch
+
 def calculate_accuracy(logits, labels):
     """
     Calculate the accuracy given logits and labels.
