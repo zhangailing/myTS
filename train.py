@@ -58,14 +58,17 @@ for epoch in range(epochs):
     student_logits = student(g, g.ndata['feat'], use_structure=True)
     student_loss = distillation_loss(structure_teacher_logits, student_logits, temperature)
     student_optimizer.zero_grad()
-    student_loss.backward(retain_graph=True)
+    student_loss.backward()  # Retain graph for the next backward pass
     student_optimizer.step()
+
+    # Detach student_logits to free up computation graph
+    # student_logits = student_logits.detach()
 
     # Train with feature teacher
     student_logits = student(g, g.ndata['feat'], use_structure=False)
     student_loss = distillation_loss(feature_teacher_logits, student_logits, temperature)
     student_optimizer.zero_grad()
-    student_loss.backward(retain_graph=True)
+    student_loss.backward()  # No need to retain graph here, last backward in loop
     student_optimizer.step()
 
     # Calculate accuracy (assuming a function calculate_accuracy(logits, labels) is defined)
